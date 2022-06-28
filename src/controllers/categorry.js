@@ -1,7 +1,8 @@
+import category from "../model/category";
 import Category from "../model/category";
 import Product from "../model/product";
 
-export const ListCategory = async(req, res) => {
+export const ListCategory = async (req, res) => {
     try {
         const category = await Category.find({}).exec()
         res.json(category)
@@ -9,21 +10,27 @@ export const ListCategory = async(req, res) => {
         res.status(400).json({ message: 'Không thể thực hiện' })
     }
 }
-export const ListCategoryAndProduct = async(request, response) => {
+export const ListCategoryAndProduct = async (request, response) => {
+    const condition = { _id: request.params.id }
     try {
-        if (request.query._embed) {
-            const categoryId = await Category.findOne({ _id: request.params.id }).exec()
-            const product = await Product.find({ categoryId }).populate('categoryId').exec()
-            response.json({ categoryId, product })
-        } else {
-            const cate = await Category.findOne({ _id: request.params.id }).exec()
-            response.json(cate)
-        }
+        const categoryId = await Category.findOne(condition).exec()
+        const product = await Product.find({ 
+            categoryId
+         }).populate('categoryId').exec()
+        response.status(200).json({ categoryId, product })
     } catch (error) {
         response.status(400).json({ message: "Không thể hiển thị" })
     }
 };
-export const AddCate = async(req, res) => {
+export const ListOneCate = async (request, response) => {
+    try {
+        const cate = await Category.findOne({ _id: request.params.id }).exec()
+        response.json(cate)
+    } catch (error) {
+        response.status(400).json({ message: "Không thể hiển thị" })
+    }
+};
+export const AddCate = async (req, res) => {
     try {
         const category = await Category(req.body).save()
         res.json(category)
@@ -31,7 +38,7 @@ export const AddCate = async(req, res) => {
         res.status(400).json({ message: 'Không thể thêm mới danh mục' })
     }
 }
-export const DeleteCategory = async(req, res) => {
+export const DeleteCategory = async (req, res) => {
     try {
         const category = await Category.findOneAndDelete({ _id: req.params.id }).exec()
         res.json(category)
@@ -39,7 +46,7 @@ export const DeleteCategory = async(req, res) => {
         res.status(400).json({ message: 'Không thể thực hiện chức anwng xóa' })
     }
 }
-export const UpdateCategory = async(req, res) => {
+export const UpdateCategory = async (req, res) => {
     try {
         const category = await Category.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }).exec()
         res.json(category)

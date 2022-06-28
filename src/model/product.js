@@ -7,11 +7,18 @@ const ProductSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: true,
+        default:0
+    },
+    sale_price: {
+        type: Number,
+        required: true,
+        default: 0
     },
     quantity: {
         type: Number,
-        required: true
+        required: true,
+        default:0
     },
     img: {
         type: String,
@@ -25,9 +32,9 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // categoryId: {
-    //     type: ObjectId,
-    //     ref: 'Category'
-    // }
+    categoryId: {
+        type: ObjectId,
+        ref: 'Category'
+    }
 }, { timestamps: true });
 export default mongoose.model('Product', ProductSchema)
